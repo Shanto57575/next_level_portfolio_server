@@ -1,11 +1,12 @@
 import express from "express";
+import { authRouter } from "../modules/auth/auth.route";
 
 export const router = express.Router();
 
 const moduleRoutes = [
   {
     path: "/auth",
-    element: express.Router(),
+    element: authRouter,
   },
 ];
 

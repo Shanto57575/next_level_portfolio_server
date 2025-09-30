@@ -1,10 +1,10 @@
 import app from "./app";
 import { envVariables } from "./config/envConfig";
-import { prisma } from "./config/prisma";
 import http, { Server } from "http";
+import { prisma } from "./config/prisma";
+import bcrypt from "bcrypt";
 
 const port = envVariables.PORT;
-
 let server: Server;
 
 async function connectToDb() {
@@ -17,12 +17,46 @@ async function connectToDb() {
   }
 }
 
+async function seedAdmin() {
+  try {
+    const email = envVariables.ADMIN_EMAIL as string;
+    const password = envVariables.ADMIN_PASSWORD as string;
+    const saltRounds = Number(envVariables.BCRYPT_SALT_ROUNDS);
+
+    // find if user already exists
+    const isAdminExists = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (isAdminExists) {
+      console.log("⚠️ Seed Admin already exists");
+      return;
+    }
+
+    // password hashing with bcrypt
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    const result = await prisma.user.create({
+      data: {
+        name: "Shanto",
+        email,
+        password: hashedPassword,
+      },
+    });
+
+    console.log("✅ Seed Admin Created successfully : ", result);
+  } catch (error) {
+    console.error("❌ Failed to create seedAdmin : ", error);
+  }
+}
+
 async function startServer() {
   try {
     await connectToDb();
+
     server = http.createServer(app);
     server.listen(port, () => {
-      console.log(`🚀 Server is running on port ${process.env.PORT}`);
+      console.log(`🚀 Server is running on port ${port}`);
     });
   } catch (error) {
     console.error("❌ Error during server startup:", error);
@@ -36,23 +70,22 @@ async function gracefulShutdown(signal: string) {
   if (server) {
     server.close(async () => {
       console.log("✅ HTTP server closed.");
-      handleProcessEvents();
+
       try {
-        console.log("Server shutdown complete.");
+        await prisma.$disconnect();
+        console.log("✅ DB disconnected.");
+        console.log("👋 Server shutdown complete.");
       } catch (error) {
         console.error("❌ Error during shutdown:", error);
+      } finally {
+        process.exit(0);
       }
-
-      process.exit(0);
     });
   } else {
     process.exit(0);
   }
 }
 
-/**
- * Handle system signals and unexpected errors.
- */
 function handleProcessEvents() {
   process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
   process.on("SIGINT", () => gracefulShutdown("SIGINT"));
@@ -68,5 +101,8 @@ function handleProcessEvents() {
   });
 }
 
-// Start the application
-startServer();
+(async () => {
+  handleProcessEvents();
+  await seedAdmin();
+  await startServer();
+})();
