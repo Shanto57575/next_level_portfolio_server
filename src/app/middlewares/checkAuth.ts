@@ -17,8 +17,6 @@ export const checkAuth =
       envVariables.JWT_ACCESS_SECRET as string
     ) as JwtPayload;
 
-    console.log("verifiedToken==>", verifiedToken);
-
     const isUserExists = await prisma.user.findUnique({
       where: { id: verifiedToken.id },
     });

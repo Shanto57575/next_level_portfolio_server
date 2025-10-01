@@ -1,0 +1,1 @@
+{"version":3,"file":"checkAuth.d.ts","sourceRoot":"","sources":["../../../src/app/middlewares/checkAuth.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,YAAY,EAAE,OAAO,EAAE,QAAQ,EAAE,MAAM,SAAS,CAAC;AAM1D,eAAO,MAAM,SAAS,GACnB,OAAO,MAAM,MACP,KAAK,OAAO,EAAE,MAAM,QAAQ,EAAE,MAAM,YAAY,kBA4BtD,CAAC"}
