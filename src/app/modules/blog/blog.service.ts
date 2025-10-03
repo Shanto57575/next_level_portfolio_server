@@ -2,6 +2,7 @@
 import { uploadBufferToCloudinary } from "../../../config/cloudinary";
 import { prisma } from "../../../config/prisma";
 import { Request } from "express";
+import { Prisma } from "../../../generated/prisma";
 
 export const createBlog = async (
   req: Request,
@@ -36,10 +37,43 @@ export const allBlogs = async () => {
         },
       },
     },
+    orderBy: { createdAt: "desc" },
+  });
+};
+
+export const getBlogById = async (blogId: number) => {
+  return await prisma.blog.findUnique({
+    where: { id: blogId },
+    include: {
+      author: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+};
+
+export const updateBlog = async (
+  blogId: number,
+  payload: Prisma.BlogUpdateInput
+) => {
+  return await prisma.blog.update({
+    where: { id: blogId },
+    data: payload,
+  });
+};
+
+export const deleteBlog = async (blogId: number) => {
+  return await prisma.blog.delete({
+    where: { id: blogId },
   });
 };
 
 export const BlogService = {
   createBlog,
   allBlogs,
+  getBlogById,
+  updateBlog,
+  deleteBlog,
 };

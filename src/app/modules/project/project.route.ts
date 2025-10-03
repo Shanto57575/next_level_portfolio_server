@@ -1,8 +1,8 @@
 import express from "express";
-import { BlogController } from "./blog.controller";
 import { checkAuth } from "../../middlewares/checkAuth";
-import { envVariables } from "../../../config/envConfig";
 import { upload } from "../../middlewares/multer";
+import { ProjectController } from "./project.controller";
+import { envVariables } from "../../../config/envConfig";
 
 const router = express.Router();
 
@@ -10,24 +10,22 @@ router.post(
   "/create-blog",
   checkAuth(envVariables.ADMIN_EMAIL as string),
   upload.single("file"),
-  BlogController.createBlog
+  ProjectController.createProject
 );
 
-router.get("/all-blogs", BlogController.allBlogs);
-
-router.get("/:id", BlogController.getBlogById);
+router.get("/all-blogs", ProjectController.allProjects);
 
 router.put(
   "/:id",
   checkAuth(envVariables.ADMIN_EMAIL as string),
   upload.single("file"),
-  BlogController.updateBlog
+  ProjectController.updateProject
 );
 
 router.delete(
   "/:id",
   checkAuth(envVariables.ADMIN_EMAIL as string),
-  BlogController.deleteBlog
+  ProjectController.deleteProject
 );
 
-export const blogRouter = router;
+export const projectRouter = router;

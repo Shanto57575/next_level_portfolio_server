@@ -10,7 +10,6 @@ const checkAuth = (email) => async (req, _res, next) => {
         throw new Error("Token Not Found");
     }
     const verifiedToken = (0, userTokens_1.verifyToken)(accessToken, envConfig_1.envVariables.JWT_ACCESS_SECRET);
-    console.log("verifiedToken==>", verifiedToken);
     const isUserExists = await prisma_1.prisma.user.findUnique({
         where: { id: verifiedToken.id },
     });

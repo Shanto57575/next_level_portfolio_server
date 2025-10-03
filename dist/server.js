@@ -35,14 +35,14 @@ async function seedAdmin() {
         }
         // password hashing with bcrypt
         const hashedPassword = await bcrypt_1.default.hash(password, saltRounds);
-        const result = await prisma_1.prisma.user.create({
+        await prisma_1.prisma.user.create({
             data: {
                 name: "Shanto",
                 email,
                 password: hashedPassword,
             },
         });
-        console.log("✅ Seed Admin Created successfully : ", result);
+        console.log("✅ Seed Admin Created successfully : ");
     }
     catch (error) {
         console.error("❌ Failed to create seedAdmin : ", error);
