@@ -7,13 +7,13 @@ import { envVariables } from "../../../config/envConfig";
 const router = express.Router();
 
 router.post(
-  "/create-blog",
+  "/create-project",
   checkAuth(envVariables.ADMIN_EMAIL as string),
   upload.single("file"),
   ProjectController.createProject
 );
 
-router.get("/all-blogs", ProjectController.allProjects);
+router.get("/all-projects", ProjectController.allProjects);
 
 router.put(
   "/:id",

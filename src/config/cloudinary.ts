@@ -19,3 +19,34 @@ export const uploadBufferToCloudinary = (buffer: Buffer, folder = "blogs") => {
     uploadStream.end(buffer);
   });
 };
+
+export const getPublicIdFromUrl = (url: string): string | null => {
+  try {
+    const parts = url.split("/");
+    const uploadIndex = parts.indexOf("upload");
+    if (uploadIndex === -1) return null;
+
+    const pathAfterUpload = parts.slice(uploadIndex + 1).join("/");
+    const withoutVersion = pathAfterUpload.replace(/^v\d+\//, "");
+    const publicId = withoutVersion.replace(/\.[^/.]+$/, "");
+
+    return publicId;
+  } catch (error) {
+    console.error("Error extracting public_id:", error);
+    return null;
+  }
+};
+
+export const deleteCloudinaryImage = async (
+  imageUrl: string
+): Promise<void> => {
+  try {
+    const publicId = getPublicIdFromUrl(imageUrl);
+    if (publicId) {
+      await cloudinary.uploader.destroy(publicId);
+      console.log(`Deleted image from Cloudinary: ${publicId}`);
+    }
+  } catch (error) {
+    console.error("Error deleting image from Cloudinary:", error);
+  }
+};

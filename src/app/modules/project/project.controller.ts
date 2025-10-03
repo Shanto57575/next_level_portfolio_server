@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { sendResponse } from "../../utils/sendResponse";
 import { ProjectService } from "./project.service";
+import { uploadBufferToCloudinary } from "../../../config/cloudinary";
 
 const createProject = async (req: Request, res: Response) => {
   try {
@@ -31,6 +32,7 @@ const createProject = async (req: Request, res: Response) => {
 const allProjects = async (_req: Request, res: Response) => {
   try {
     const projects = await ProjectService.allProjects();
+
     sendResponse({
       res,
       success: true,
@@ -39,6 +41,7 @@ const allProjects = async (_req: Request, res: Response) => {
       message: "all projects retrieved successfully",
     });
   } catch (error) {
+    console.log("error=>", error);
     sendResponse({
       res,
       success: false,
@@ -49,13 +52,16 @@ const allProjects = async (_req: Request, res: Response) => {
   }
 };
 
-//* MIGHT NEED UPDATE
 const updateProject = async (req: Request, res: Response) => {
   try {
-    const updatedProject = await ProjectService.updateProject(
-      Number(req.params.id),
-      req.body
-    );
+    let newImageUrl: string | undefined;
+
+    if (req.file) {
+      newImageUrl = await uploadBufferToCloudinary(req.file.buffer);
+    }
+
+    const updatedProject = await ProjectService.updateProject(req, newImageUrl);
+
     sendResponse({
       res,
       success: true,

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { sendResponse } from "../../utils/sendResponse";
 import { BlogService } from "./blog.service";
+import { uploadBufferToCloudinary } from "../../../config/cloudinary";
 
 const createBlog = async (req: Request, res: Response) => {
   try {
@@ -72,10 +73,18 @@ const getBlogById = async (req: Request, res: Response) => {
 
 const updateBlog = async (req: Request, res: Response) => {
   try {
+    let newImageUrl: string | undefined;
+
+    if (req.file) {
+      newImageUrl = await uploadBufferToCloudinary(req.file.buffer);
+    }
+
     const updatedBlog = await BlogService.updateBlog(
       Number(req.params.id),
-      req.body
+      req.body,
+      newImageUrl
     );
+
     sendResponse({
       res,
       success: true,

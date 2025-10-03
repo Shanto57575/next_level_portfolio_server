@@ -7,9 +7,8 @@ import { prisma } from "../../config/prisma";
 export const checkAuth =
   (email: string) =>
   async (req: Request, _res: Response, next: NextFunction) => {
-    console.log("req.cookies==>", req.cookies);
     const accessToken = req.cookies?.accessToken;
-    console.log("token", accessToken);
+
     if (!accessToken) {
       throw new Error("Token Not Found");
     }
