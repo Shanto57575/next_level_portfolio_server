@@ -4,6 +4,7 @@ exports.BlogService = exports.deleteBlog = exports.updateBlog = exports.getBlogB
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 const cloudinary_1 = require("../../../config/cloudinary");
 const prisma_1 = require("../../../config/prisma");
+const AppError_1 = require("../../utils/AppError");
 const createBlog = async (req, payload) => {
     const imageUrl = await (0, cloudinary_1.uploadBufferToCloudinary)(req.file.buffer);
     return prisma_1.prisma.blog.create({
@@ -38,7 +39,7 @@ const allBlogs = async () => {
 };
 exports.allBlogs = allBlogs;
 const getBlogById = async (blogId) => {
-    return await prisma_1.prisma.blog.findUnique({
+    const blog = await prisma_1.prisma.blog.findUnique({
         where: { id: blogId },
         include: {
             author: {
@@ -48,9 +49,24 @@ const getBlogById = async (blogId) => {
             },
         },
     });
+    if (!blog) {
+        throw new AppError_1.AppError(404, "Blog not found");
+    }
+    return blog;
 };
 exports.getBlogById = getBlogById;
-const updateBlog = async (blogId, payload) => {
+const updateBlog = async (blogId, payload, newImageUrl) => {
+    const existingBlog = await prisma_1.prisma.blog.findUnique({
+        where: { id: blogId },
+        select: { image: true },
+    });
+    if (!existingBlog) {
+        throw new AppError_1.AppError(404, "Blog not found");
+    }
+    if (newImageUrl && existingBlog?.image) {
+        await (0, cloudinary_1.deleteCloudinaryImage)(existingBlog.image);
+        payload.image = newImageUrl;
+    }
     return await prisma_1.prisma.blog.update({
         where: { id: blogId },
         data: payload,
@@ -58,9 +74,20 @@ const updateBlog = async (blogId, payload) => {
 };
 exports.updateBlog = updateBlog;
 const deleteBlog = async (blogId) => {
-    return await prisma_1.prisma.blog.delete({
+    const blog = await prisma_1.prisma.blog.findUnique({
+        where: { id: blogId },
+        select: { image: true },
+    });
+    if (!blog) {
+        throw new AppError_1.AppError(404, "Blog not found");
+    }
+    const deletedBlog = await prisma_1.prisma.blog.delete({
         where: { id: blogId },
     });
+    if (blog?.image) {
+        await (0, cloudinary_1.deleteCloudinaryImage)(blog.image);
+    }
+    return deletedBlog;
 };
 exports.deleteBlog = deleteBlog;
 exports.BlogService = {

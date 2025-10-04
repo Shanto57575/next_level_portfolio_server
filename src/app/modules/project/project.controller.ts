@@ -1,15 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { sendResponse } from "../../utils/sendResponse";
 import { ProjectService } from "./project.service";
 import { uploadBufferToCloudinary } from "../../../config/cloudinary";
 import { AppError } from "../../utils/AppError";
 
-const createProject = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const createProject = async (req: Request, res: Response) => {
   if (!req.file) {
     throw new AppError(400, "No file uploaded");
   }
@@ -25,11 +20,7 @@ const createProject = async (
   });
 };
 
-const allProjects = async (
-  _req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const allProjects = async (_req: Request, res: Response) => {
   const projects = await ProjectService.allProjects();
 
   sendResponse({
@@ -41,11 +32,7 @@ const allProjects = async (
   });
 };
 
-const updateProject = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const updateProject = async (req: Request, res: Response) => {
   let newImageUrl: string | undefined;
 
   if (req.file) {
@@ -63,11 +50,7 @@ const updateProject = async (
   });
 };
 
-const deleteProject = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const deleteProject = async (req: Request, res: Response) => {
   await ProjectService.deleteProject(Number(req.params.id));
 
   sendResponse({

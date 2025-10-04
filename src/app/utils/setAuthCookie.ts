@@ -9,6 +9,5 @@ export const setAuthCookie = (res: Response, tokenInfo: ITokenInfo) => {
     httpOnly: true,
     secure: true,
     sameSite: "none",
-    maxAge: 30 * 24 * 60 * 60 * 1000,
   });
 };

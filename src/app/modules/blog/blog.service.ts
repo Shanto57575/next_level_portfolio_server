@@ -5,8 +5,8 @@ import {
 } from "../../../config/cloudinary";
 import { prisma } from "../../../config/prisma";
 import { Request } from "express";
-import { Prisma } from "../../../generated/prisma";
 import { AppError } from "../../utils/AppError";
+import { Prisma } from "@prisma/client";
 
 export const createBlog = async (
   req: Request,

@@ -8,17 +8,18 @@ exports.AuthService = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const prisma_1 = require("../../../config/prisma");
 const userTokens_1 = require("../../utils/userTokens");
+const AppError_1 = require("../../utils/AppError");
 const loginService = async (payload) => {
     const { email, password } = payload;
     const isUserExists = await prisma_1.prisma.user.findUnique({
         where: { email: email },
     });
     if (!isUserExists) {
-        throw new Error("User Not Found");
+        throw new AppError_1.AppError(404, "User Not Found");
     }
     const isPasswordMatched = await bcrypt_1.default.compare(password, isUserExists.password);
     if (!isPasswordMatched) {
-        throw new Error("Invalid credentials");
+        throw new AppError_1.AppError(401, "Invalid credentials");
     }
     const jwtPayload = {
         id: isUserExists.id,
@@ -36,7 +37,7 @@ const getMeService = async (email) => {
         where: { email },
     });
     if (!userInfo) {
-        throw new Error("User Not Found");
+        throw new AppError_1.AppError(404, "User Not Found");
     }
     const { password: pass, ...rest } = userInfo;
     return rest;

@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { sendResponse } from "../../utils/sendResponse";
 import { BlogService } from "./blog.service";
 import { uploadBufferToCloudinary } from "../../../config/cloudinary";
 import { AppError } from "../../utils/AppError";
 
-const createBlog = async (req: Request, res: Response, next: NextFunction) => {
+const createBlog = async (req: Request, res: Response) => {
   if (!req.file) {
     throw new AppError(400, "No file uploaded");
   }
@@ -21,7 +20,7 @@ const createBlog = async (req: Request, res: Response, next: NextFunction) => {
   });
 };
 
-const allBlogs = async (req: Request, res: Response, next: NextFunction) => {
+const allBlogs = async (req: Request, res: Response) => {
   const blogs = await BlogService.allBlogs();
 
   sendResponse({
@@ -33,7 +32,7 @@ const allBlogs = async (req: Request, res: Response, next: NextFunction) => {
   });
 };
 
-const getBlogById = async (req: Request, res: Response, next: NextFunction) => {
+const getBlogById = async (req: Request, res: Response) => {
   const blog = await BlogService.getBlogById(Number(req.params.id));
 
   sendResponse({
@@ -45,7 +44,7 @@ const getBlogById = async (req: Request, res: Response, next: NextFunction) => {
   });
 };
 
-const updateBlog = async (req: Request, res: Response, next: NextFunction) => {
+const updateBlog = async (req: Request, res: Response) => {
   let newImageUrl: string | undefined;
 
   if (req.file) {
@@ -67,7 +66,7 @@ const updateBlog = async (req: Request, res: Response, next: NextFunction) => {
   });
 };
 
-const deleteBlog = async (req: Request, res: Response, next: NextFunction) => {
+const deleteBlog = async (req: Request, res: Response) => {
   await BlogService.deleteBlog(Number(req.params.id));
 
   sendResponse({

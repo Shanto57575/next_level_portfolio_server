@@ -5,15 +5,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
-const dotenv_1 = __importDefault(require("dotenv"));
 const routes_1 = require("./app/router/routes");
 const envConfig_1 = require("./config/envConfig");
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
-dotenv_1.default.config();
+const globalErrorHandler_1 = require("./app/middlewares/globalErrorHandler");
+const notFound_1 = __importDefault(require("./app/middlewares/notFound"));
 const app = (0, express_1.default)();
-app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
+app.use((0, cookie_parser_1.default)());
 app.use((0, cors_1.default)({
     origin: envConfig_1.envVariables.FRONTEND_URL,
     credentials: true,
@@ -22,4 +22,6 @@ app.get("/", (req, res) => {
     res.send({ message: "portfolio server api is running fine" });
 });
 app.use("/api/v1", routes_1.router);
+app.use(globalErrorHandler_1.globalErrorHandler);
+app.use(notFound_1.default);
 exports.default = app;
