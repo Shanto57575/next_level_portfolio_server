@@ -6,6 +6,7 @@ import {
 import { prisma } from "../../../config/prisma";
 import { Request } from "express";
 import { Prisma } from "../../../generated/prisma";
+import { AppError } from "../../utils/AppError";
 
 export const createBlog = async (
   req: Request,
@@ -45,7 +46,7 @@ export const allBlogs = async () => {
 };
 
 export const getBlogById = async (blogId: number) => {
-  return await prisma.blog.findUnique({
+  const blog = await prisma.blog.findUnique({
     where: { id: blogId },
     include: {
       author: {
@@ -55,6 +56,12 @@ export const getBlogById = async (blogId: number) => {
       },
     },
   });
+
+  if (!blog) {
+    throw new AppError(404, "Blog not found");
+  }
+
+  return blog;
 };
 
 export const updateBlog = async (
@@ -66,6 +73,10 @@ export const updateBlog = async (
     where: { id: blogId },
     select: { image: true },
   });
+
+  if (!existingBlog) {
+    throw new AppError(404, "Blog not found");
+  }
 
   if (newImageUrl && existingBlog?.image) {
     await deleteCloudinaryImage(existingBlog.image);
@@ -83,6 +94,10 @@ export const deleteBlog = async (blogId: number) => {
     where: { id: blogId },
     select: { image: true },
   });
+
+  if (!blog) {
+    throw new AppError(404, "Blog not found");
+  }
 
   const deletedBlog = await prisma.blog.delete({
     where: { id: blogId },

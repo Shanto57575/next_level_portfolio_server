@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import { prisma } from "../../../config/prisma";
 import { IUser } from "./auth.interface";
 import { createUserTokens } from "../../utils/userTokens";
+import { AppError } from "../../utils/AppError";
 
 const loginService = async (payload: Partial<IUser>) => {
   const { email, password } = payload;
@@ -12,15 +13,16 @@ const loginService = async (payload: Partial<IUser>) => {
   });
 
   if (!isUserExists) {
-    throw new Error("User Not Found");
+    throw new AppError(404, "User Not Found");
   }
+
   const isPasswordMatched = await bcrypt.compare(
     password as string,
     isUserExists.password
   );
 
   if (!isPasswordMatched) {
-    throw new Error("Invalid credentials");
+    throw new AppError(401, "Invalid credentials");
   }
 
   const jwtPayload = {
@@ -43,7 +45,7 @@ const getMeService = async (email: string) => {
   });
 
   if (!userInfo) {
-    throw new Error("User Not Found");
+    throw new AppError(404, "User Not Found");
   }
 
   const { password: pass, ...rest } = userInfo;

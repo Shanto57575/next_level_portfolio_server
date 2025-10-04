@@ -1,105 +1,82 @@
-import { Request, Response } from "express";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../utils/sendResponse";
 import { ProjectService } from "./project.service";
 import { uploadBufferToCloudinary } from "../../../config/cloudinary";
+import { AppError } from "../../utils/AppError";
 
-const createProject = async (req: Request, res: Response) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ message: "No file uploaded" });
-    }
-
-    const newProject = await ProjectService.createProject(req);
-
-    sendResponse({
-      res,
-      success: true,
-      statusCode: 201,
-      data: newProject,
-      message: "Added project successfully",
-    });
-  } catch (error) {
-    sendResponse({
-      res,
-      success: false,
-      statusCode: 500,
-      data: error,
-      message: "Failed to add project",
-    });
+const createProject = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (!req.file) {
+    throw new AppError(400, "No file uploaded");
   }
+
+  const newProject = await ProjectService.createProject(req);
+
+  sendResponse({
+    res,
+    success: true,
+    statusCode: 201,
+    data: newProject,
+    message: "Added project successfully",
+  });
 };
 
-const allProjects = async (_req: Request, res: Response) => {
-  try {
-    const projects = await ProjectService.allProjects();
+const allProjects = async (
+  _req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const projects = await ProjectService.allProjects();
 
-    sendResponse({
-      res,
-      success: true,
-      statusCode: 200,
-      data: projects,
-      message: "all projects retrieved successfully",
-    });
-  } catch (error) {
-    console.log("error=>", error);
-    sendResponse({
-      res,
-      success: false,
-      statusCode: 500,
-      data: error,
-      message: "Failed to retrieved all projects",
-    });
-  }
+  sendResponse({
+    res,
+    success: true,
+    statusCode: 200,
+    data: projects,
+    message: "all projects retrieved successfully",
+  });
 };
 
-const updateProject = async (req: Request, res: Response) => {
-  try {
-    let newImageUrl: string | undefined;
+const updateProject = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  let newImageUrl: string | undefined;
 
-    if (req.file) {
-      newImageUrl = await uploadBufferToCloudinary(req.file.buffer);
-    }
-
-    const updatedProject = await ProjectService.updateProject(req, newImageUrl);
-
-    sendResponse({
-      res,
-      success: true,
-      statusCode: 200,
-      data: updatedProject,
-      message: "project updated successfully",
-    });
-  } catch (error) {
-    sendResponse({
-      res,
-      success: false,
-      statusCode: 500,
-      data: error,
-      message: "Failed to update project",
-    });
+  if (req.file) {
+    newImageUrl = await uploadBufferToCloudinary(req.file.buffer);
   }
+
+  const updatedProject = await ProjectService.updateProject(req, newImageUrl);
+
+  sendResponse({
+    res,
+    success: true,
+    statusCode: 200,
+    data: updatedProject,
+    message: "project updated successfully",
+  });
 };
 
-const deleteProject = async (req: Request, res: Response) => {
-  try {
-    await ProjectService.deleteProject(Number(req.params.id));
+const deleteProject = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  await ProjectService.deleteProject(Number(req.params.id));
 
-    sendResponse({
-      res,
-      success: true,
-      statusCode: 200,
-      data: null,
-      message: "project deleted successfully",
-    });
-  } catch (error) {
-    sendResponse({
-      res,
-      success: false,
-      statusCode: 500,
-      data: error,
-      message: "Failed to delete project",
-    });
-  }
+  sendResponse({
+    res,
+    success: true,
+    statusCode: 200,
+    data: null,
+    message: "project deleted successfully",
+  });
 };
 
 export const ProjectController = {

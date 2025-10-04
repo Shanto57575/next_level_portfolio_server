@@ -5,6 +5,7 @@ import {
 } from "../../../config/cloudinary";
 import { prisma } from "../../../config/prisma";
 import { Request } from "express";
+import { AppError } from "../../utils/AppError";
 
 export const createProject = async (req: Request) => {
   const imageUrl = await uploadBufferToCloudinary(req.file!.buffer);
@@ -42,6 +43,10 @@ export const updateProject = async (req: Request, newImageUrl?: string) => {
     select: { image: true },
   });
 
+  if (!existingProject) {
+    throw new AppError(404, "Project not found");
+  }
+
   if (newImageUrl && existingProject?.image) {
     await deleteCloudinaryImage(existingProject.image);
     req.body.image = newImageUrl;
@@ -60,6 +65,10 @@ export const deleteProject = async (projectId: number) => {
     where: { id: projectId },
     select: { image: true },
   });
+
+  if (!project) {
+    throw new AppError(404, "Project not found");
+  }
 
   const deletedProject = await prisma.project.delete({
     where: { id: projectId },
