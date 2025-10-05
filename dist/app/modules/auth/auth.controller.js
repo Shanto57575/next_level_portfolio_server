@@ -31,7 +31,7 @@ const logout = async (_req, res) => {
         success: true,
         statusCode: 200,
         data: null,
-        message: "logged out Successfully",
+        message: "Logged out Successfully",
     });
 };
 const getMe = async (req, res) => {

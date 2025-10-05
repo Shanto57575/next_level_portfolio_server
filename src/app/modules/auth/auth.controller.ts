@@ -39,7 +39,7 @@ const logout = async (_req: Request, res: Response) => {
     success: true,
     statusCode: 200,
     data: null,
-    message: "logged out Successfully",
+    message: "Logged out Successfully",
   });
 };
 
