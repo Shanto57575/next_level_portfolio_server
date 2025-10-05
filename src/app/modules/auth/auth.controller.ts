@@ -28,12 +28,6 @@ const logout = async (_req: Request, res: Response) => {
     sameSite: "none",
   });
 
-  res.clearCookie("refreshToken", {
-    httpOnly: true,
-    secure: true,
-    sameSite: "none",
-  });
-
   sendResponse({
     res,
     success: true,
