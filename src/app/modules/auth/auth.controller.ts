@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { AuthService } from "./auth.service";
 import { sendResponse } from "../../utils/sendResponse";
 import { IUser } from "./auth.interface";
-import { setAuthCookie } from "../../utils/setAuthCookie";
 import { JwtPayload } from "jsonwebtoken";
 
 const login = async (req: Request, res: Response) => {
@@ -10,13 +9,21 @@ const login = async (req: Request, res: Response) => {
     req.body as Partial<IUser>
   );
 
-  setAuthCookie(res, loggedInInfo.userTokens);
+  res.cookie("accessToken", loggedInInfo.userTokens.accessToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+  });
 
   sendResponse({
     res,
     success: true,
     statusCode: 200,
-    data: loggedInInfo.user,
+    data: {
+      user: loggedInInfo.user,
+      token: loggedInInfo.userTokens.accessToken,
+    },
     message: "Login Successful",
   });
 };
@@ -26,6 +33,7 @@ const logout = async (_req: Request, res: Response) => {
     httpOnly: true,
     secure: true,
     sameSite: "none",
+    path: "/",
   });
 
   sendResponse({
