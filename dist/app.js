@@ -13,6 +13,7 @@ const envConfig_1 = require("./config/envConfig");
 const app = (0, express_1.default)();
 const corsOptions = {
     origin: envConfig_1.envVariables.FRONTEND_URL,
+    // origin: "http://localhost:3000",
     credentials: true,
 };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

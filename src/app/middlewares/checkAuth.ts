@@ -9,6 +9,7 @@ export const checkAuth =
   async (req: Request, _res: Response, next: NextFunction) => {
     const accessToken = req.cookies?.accessToken;
 
+    console.log("token==>", accessToken);
     if (!accessToken) {
       throw new Error("Token Not Found");
     }

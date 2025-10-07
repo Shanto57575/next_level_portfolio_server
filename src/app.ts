@@ -9,12 +9,13 @@ import { envVariables } from "./config/envConfig";
 const app = express();
 
 interface CustomCorsOptions {
-  origin: string | RegExp | (string | RegExp)[];
+  origin: string;
   credentials?: boolean;
 }
 
 const corsOptions: CustomCorsOptions = {
   origin: envVariables.FRONTEND_URL as string,
+  // origin: "http://localhost:3000",
   credentials: true,
 };
 
