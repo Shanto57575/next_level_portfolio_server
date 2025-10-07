@@ -1,5 +1,5 @@
 import express from "express";
-import cors from "cors";
+import cors, { CorsOptions } from "cors";
 import { router } from "./app/router/routes";
 import cookieParser from "cookie-parser";
 import { globalErrorHandler } from "./app/middlewares/globalErrorHandler";
@@ -8,12 +8,12 @@ import { envVariables } from "./config/envConfig";
 
 const app = express();
 
-app.use(
-  cors({
-    origin: envVariables.FRONTEND_URL,
-    credentials: true,
-  })
-);
+const corsOptions: CorsOptions = {
+  origin: envVariables.FRONTEND_URL,
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
