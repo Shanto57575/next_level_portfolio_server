@@ -11,10 +11,12 @@ const globalErrorHandler_1 = require("./app/middlewares/globalErrorHandler");
 const notFound_1 = __importDefault(require("./app/middlewares/notFound"));
 const envConfig_1 = require("./config/envConfig");
 const app = (0, express_1.default)();
-app.use((0, cors_1.default)({
+const corsOptions = {
     origin: envConfig_1.envVariables.FRONTEND_URL,
     credentials: true,
-}));
+};
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+app.use((0, cors_1.default)(corsOptions));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use((0, cookie_parser_1.default)());

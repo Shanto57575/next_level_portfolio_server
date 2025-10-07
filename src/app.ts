@@ -1,5 +1,5 @@
 import express from "express";
-import cors, { CorsOptions } from "cors";
+import cors from "cors";
 import { router } from "./app/router/routes";
 import cookieParser from "cookie-parser";
 import { globalErrorHandler } from "./app/middlewares/globalErrorHandler";
@@ -8,12 +8,18 @@ import { envVariables } from "./config/envConfig";
 
 const app = express();
 
-const corsOptions: CorsOptions = {
-  origin: envVariables.FRONTEND_URL,
+interface CustomCorsOptions {
+  origin: string | RegExp | (string | RegExp)[];
+  credentials?: boolean;
+}
+
+const corsOptions: CustomCorsOptions = {
+  origin: envVariables.FRONTEND_URL as string,
   credentials: true,
 };
 
-app.use(cors(corsOptions));
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+app.use(cors(corsOptions as any));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
