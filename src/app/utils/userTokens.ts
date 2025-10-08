@@ -10,9 +10,7 @@ export const createUserTokens = (payload: JwtPayload) => {
     } as SignOptions
   );
 
-  return {
-    accessToken,
-  };
+  return accessToken;
 };
 
 export const verifyToken = (token: string, secret: string) => {

@@ -30,30 +30,15 @@ const loginService = async (payload: Partial<IUser>) => {
     email: isUserExists.email,
   };
 
-  const userTokens = createUserTokens(jwtPayload);
+  const userToken = createUserTokens(jwtPayload);
   const { password: pass, ...rest } = isUserExists;
 
   return {
-    userTokens,
+    userToken,
     user: rest,
   };
 };
 
-const getMeService = async (email: string) => {
-  const userInfo = await prisma.user.findUnique({
-    where: { email },
-  });
-
-  if (!userInfo) {
-    throw new AppError(404, "User Not Found");
-  }
-
-  const { password: pass, ...rest } = userInfo;
-
-  return rest;
-};
-
 export const AuthService = {
   loginService,
-  getMeService,
 };

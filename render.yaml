@@ -1,9 +1,0 @@
-services:
-  - type: web
-    name: your-backend-name
-    env: node
-    buildCommand: npm install && npm run build && npx prisma generate
-    startCommand: npm start
-    envVars:
-      - key: NODE_ENV
-        value: production

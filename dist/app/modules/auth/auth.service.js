@@ -25,24 +25,13 @@ const loginService = async (payload) => {
         id: isUserExists.id,
         email: isUserExists.email,
     };
-    const userTokens = (0, userTokens_1.createUserTokens)(jwtPayload);
+    const userToken = (0, userTokens_1.createUserTokens)(jwtPayload);
     const { password: pass, ...rest } = isUserExists;
     return {
-        userTokens,
+        userToken,
         user: rest,
     };
 };
-const getMeService = async (email) => {
-    const userInfo = await prisma_1.prisma.user.findUnique({
-        where: { email },
-    });
-    if (!userInfo) {
-        throw new AppError_1.AppError(404, "User Not Found");
-    }
-    const { password: pass, ...rest } = userInfo;
-    return rest;
-};
 exports.AuthService = {
     loginService,
-    getMeService,
 };

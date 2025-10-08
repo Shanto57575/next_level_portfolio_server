@@ -5,8 +5,7 @@ const userTokens_1 = require("../utils/userTokens");
 const envConfig_1 = require("../../config/envConfig");
 const prisma_1 = require("../../config/prisma");
 const checkAuth = (email) => async (req, _res, next) => {
-    const accessToken = req.cookies?.accessToken;
-    console.log("token==>", accessToken);
+    const accessToken = req.headers.authorization?.split(" ")[1];
     if (!accessToken) {
         throw new Error("Token Not Found");
     }

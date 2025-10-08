@@ -10,9 +10,7 @@ const createUserTokens = (payload) => {
     const accessToken = jsonwebtoken_1.default.sign(payload, envConfig_1.envVariables.JWT_ACCESS_SECRET, {
         expiresIn: envConfig_1.envVariables.JWT_ACCESS_EXPIRES,
     });
-    return {
-        accessToken,
-    };
+    return accessToken;
 };
 exports.createUserTokens = createUserTokens;
 const verifyToken = (token, secret) => {
