@@ -4,7 +4,7 @@ RESTful API backend for the portfolio website, built with Node.js, Express, Pris
 
 ## 🚀 Live Demo
 
-**Backend API:** [Backend Live Url](https://shantofolioserver.vercel.app)  
+**Backend API:** [Backend Live](https://portfolioserver-kappa-six.vercel.app)  
 
 ## ✨ Features
 
@@ -12,7 +12,7 @@ RESTful API backend for the portfolio website, built with Node.js, Express, Pris
 - 🔒 **Password Hashing** - bcrypt for secure password storage
 - 📝 **Blog Management** - Full CRUD operations for blog posts
 - 🚀 **Project Management** - Complete project CRUD functionality
-- 🖼️ **File Upload** - Image upload support with Multer
+- 🖼️ **File Upload** - Image upload support with Multer & cloudinary
 - ✅ **Input Validation** - Request validation and sanitization
 - 🗄️ **PostgreSQL Database** - Reliable data persistence with Prisma ORM
 
@@ -25,14 +25,7 @@ RESTful API backend for the portfolio website, built with Node.js, Express, Pris
 - **ORM:** Prisma
 - **Authentication:** JWT + bcrypt
 - **File Upload:** Multer
-- **Validation:** express-validator
 - **Deployment:** Vercel
-
-## 📋 Prerequisites
-
-- Node.js 18+
-- PostgreSQL 17
-- npm
 
 ## 🚦 Getting Started
 
@@ -89,24 +82,21 @@ RESTful API backend for the portfolio website, built with Node.js, Express, Pris
 ### Authentication Routes
 | Method | Endpoint | Description | Auth Required |
 |--------|----------|-------------|---------------|
-| POST | `/api/auth/login` | Admin login | ❌ |
-| GET | `/api/auth/logout` | Admin logout | ❌ |
-| GET | `/api/auth/me` | Get current admin | ✅ |
+| POST | `/api/v1/auth/login` | Admin login | ❌ 
 ---
 
 ### Blog Routes
 | Method | Endpoint | Description | Auth Required |
 |--------|----------|-------------|---------------|
-| POST | `/api/blogs/create-blog` | Create new blog | ✅ |
-| GET | `/api/blogs/all-blogs` | Get all blogs | ❌ |
-| GET | `/api/blogs/:id` | Get blog by ID | ❌ |
-| PUT | `/api/blogs/:id` | Update blog | ✅ |
-| DELETE | `/api/blogs/:id` | Delete blog | ✅ |
-
+| POST | `/api/v1/blog/create-blog` | Create new blog | ✅ |
+| GET | `/api/v1/blog/all-blogs` | Get all blogs | ❌ |
+| GET | `/api/v1/blog/:id` | Get blog by ID | ❌ |
+| PUT | `/api/v1/blog/:id` | Update blog | ✅ |
+| DELETE | `/api/v1/blog/:id` | Delete blog | ✅
 ```
 ## 🚀 Deployment
 
-### Build for production
+## Build for production
 
 npm run build
 ```
